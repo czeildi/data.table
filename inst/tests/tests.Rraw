@@ -21685,3 +21685,25 @@ d3 = unserialize(serialize(d2, NULL))
 test(2340.05, .selfref.ok(d3), FALSE)
 setDT(d3)
 test(2340.06, .selfref.ok(d3), TRUE)
+
+# cartesian join with key not matching sorted attribute #7364
+local({
+  d1 = data.table(
+    V1 = c(1L, 0L, 1L),
+    V2 = c("a", "a", "b"),
+    key = "V2"
+  )
+
+  d2 = d1[, .(
+    V1,
+    label = fifelse(V1 == 0L, "zero", "one"),
+    V2
+  )]
+
+  r = d2[
+    data.table(label = "one"),
+    on = "label",
+    allow.cartesian = TRUE
+  ]
+  test(2341.00, nrow(r), 2L)
+})
