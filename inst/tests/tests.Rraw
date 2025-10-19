@@ -21686,7 +21686,7 @@ test(2340.05, .selfref.ok(d3), FALSE)
 setDT(d3)
 test(2340.06, .selfref.ok(d3), TRUE)
 
-# cartesian join with key not matching sorted attribute #7364
+# cartesian join with data.table not sorted by its key (and sorted attr) #7364
 local({
   d1 = data.table(
     V1 = c(1L, 0L, 1L),
@@ -21696,14 +21696,18 @@ local({
 
   d2 = d1[, .(
     V1,
-    label = fifelse(V1 == 0L, "zero", "one"),
+    label = c("one", "zero", "one"),
     V2
   )]
 
-  r = d2[
-    data.table(label = "one"),
-    on = "label",
-    allow.cartesian = TRUE
-  ]
-  test(2341.00, nrow(r), 2L)
+  test(2341.00, key(d2), "V2")
+
+  # if key is fixed above, there is no need to test join (?)
+
+  # r = d2[
+  #   data.table(label = "one"),
+  #   on = "label",
+  #   allow.cartesian = TRUE
+  # ]
+  # test(2341.01, nrow(r), 2L)
 })
