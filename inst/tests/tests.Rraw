@@ -21700,6 +21700,7 @@ local({
     V2
   )]
 
+  # no key is also acceptable and leads to correct (but slower join)
   test(2341.00, key(d2), "V2")
 
   # if key is fixed above, there is no need to test join (?)
@@ -21711,3 +21712,40 @@ local({
   # ]
   # test(2341.01, nrow(r), 2L)
 })
+
+# # 1119
+# DT = data.table(x=5:1, y=1:5, key="y")
+# key(DT[, list(z = y, y = 1/y)]) # expects z
+
+# # # 2266.3
+# DT = data.table(id = rep(1:10, 2L), grp = rep(1:2, each=10L), V = 1:20/13, key=c('id', 'grp'))
+# key(DT[ , .(newid = id, newgrp = grp)]) # , c('newid', 'newgrp'))
+
+# DT = data.table(V1 = 1:2, key = "V1")
+# key(DT[, .(new_col = c("b", "a"), V1)])
+
+# # already work as expected but should keep working
+# local({
+#   d1 = data.table(V1 = 1:2, V2 = 2:1, key = "V1")
+
+#   d2 = d1[, lapply(.SD, \(x) -x)]
+#   d2
+#   key(d2) # expect NULL
+
+#   d3 = d1[, .(V1 = -V1, V2)]
+#   d3
+#   key(d3) # expect NULL
+
+#   d4 = d1[, lapply(.SD, as.integer)]
+#   key(d4) # expect V1
+
+#   DT = data.table(a=1, b=2, c=3, key='a,b,c')
+#   d2 = DT[ , .(a = 10:1, b=1:10, c=10:1)]
+#   key(d2)
+
+#   d1 = data.table(V1 = 1:2, V2 = 2:1, key = "V1")
+#   key(d1[, c(new_col = 3, .SD)])
+
+#   dt = data.table(a = 1:2, key = 'a')
+#   dt[, lapply(.SD, function(x) as.integer(x * 1000))]
+# })

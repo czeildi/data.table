@@ -1451,11 +1451,19 @@ replace_dot_alias = function(e) {
           jnames = as.character(Filter(is.name, jsub)[-1L])
         key_idx = chmatch(key, jnames)
         missing_keys = which(is.na(key_idx))
+        # message("\nkey_idx:", key_idx)
+        # message("\nmissing_keys:", missing_keys)
+        # message("\njsub:", jsub)
+        # message("\njvnames:", jvnames)
+        # message("\njnames:", jnames)
+        # message("\nsdvars:", sdvars)
+        # message("\nkey:", key)
         if (length(missing_keys) && missing_keys[1L] == 1L) return(NULL)
         if (!length(missing_keys)) return(jvnames[key_idx])
         jvnames[head(key_idx, missing_keys[1L] - 1L)]
       }
       shared_keys = get_shared_keys(jsub, jvnames, sdvars = sdvars, key(x))
+      # message("\nshared_keys:", shared_keys)
       if (is.null(irows) && !is.null(shared_keys)) {
         setattr(jval, 'sorted', shared_keys)
         # potentially inefficient backup -- check if jval is sorted by key(x)
