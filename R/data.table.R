@@ -1448,6 +1448,9 @@ replace_dot_alias = function(e) {
         if (SD_only)
           jvnames = jnames = sdvars
         else
+          # I believe this line should be changed
+          # so that jnames has the same length as jvnames but contains null or na for those values that are not names
+          # this way the indexes should be correct
           jnames = as.character(Filter(is.name, jsub)[-1L])
         key_idx = chmatch(key, jnames)
         missing_keys = which(is.na(key_idx))
